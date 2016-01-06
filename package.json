@@ -1,7 +1,7 @@
 {
-  "name": "agenda",
-  "version": "0.6.28",
-  "description": "Light weight job scheduler for Node.js",
+  "name": "fh-agenda",
+  "version": "0.1.0",
+  "description": "Temporary Clone Of Agenda To Fix A Concurrency Bug. Do Not Use This.",
   "main": "index.js",
   "scripts": {
     "test": "mocha",
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/rschmukler/agenda"
+    "url": "git://github.com/ndonnelly/agenda"
   },
   "keywords": [
     "job",
@@ -22,10 +22,10 @@
     "scheduler",
     "runner"
   ],
-  "author": "Ryan Schmukler <ryan@slingingcode.com> (http://slingingcode.com/)",
+  "author": "Feedhenry",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rschmukler/agenda/issues"
+    "url": "https://github.com/ndonnelly/agenda/issues"
   },
   "dependencies": {
     "human-interval": "~0.1.3",
