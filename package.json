@@ -1,6 +1,6 @@
 {
   "name": "fh-agenda",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Temporary Clone Of Agenda To Fix A Concurrency Bug. Do Not Use This.",
   "main": "index.js",
   "scripts": {
@@ -28,10 +28,10 @@
     "url": "https://github.com/ndonnelly/agenda/issues"
   },
   "dependencies": {
-    "human-interval": "~0.1.3",
+    "cron": "~1.0.1",
     "date.js": "~0.2.0",
-    "mongoskin": "~1.4.1",
-    "cron": "~1.0.1"
+    "moment-timezone": "^0.5.0",
+    "mongoskin": "~1.4.1"
   },
   "devDependencies": {
     "mocha": "~1.13.0",
