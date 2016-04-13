@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ndonnelly/agenda"
+    "url": "git://github.com/fheng/agenda"
   },
   "keywords": [
     "job",
@@ -25,7 +25,7 @@
   "author": "Feedhenry",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ndonnelly/agenda/issues"
+    "url": "https://github.com/fheng/agenda/issues"
   },
   "dependencies": {
     "cron": "~1.0.1",
