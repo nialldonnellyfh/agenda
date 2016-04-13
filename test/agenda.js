@@ -3,6 +3,7 @@
 var mongoCfg = 'localhost:27017/agenda-test',
     expect = require('expect.js'),
     path = require('path'),
+    moment = require('moment-timezone'),
     cp = require('child_process'),
     mongo = require('mongoskin').db('mongodb://' + mongoCfg, {w: 0}),
     Agenda = require( path.join('..', 'index.js') ),
@@ -216,7 +217,7 @@ describe('Agenda', function() {
     describe('unique', function() {
 
       describe('should demonstrate unique contraint', function(done) {
-        
+
         it('should create one job when unique matches', function(done) {
           var time = new Date();
           jobs.create('unique job', {type: 'active', userId: '123', 'other': true}).unique({'data.type': 'active', 'data.userId': '123', nextRunAt: time}).schedule(time).save(function(err, job) {
@@ -229,15 +230,15 @@ describe('Agenda', function() {
           });
         });
         after(clearJobs);
-        
+
       });
 
       describe('should demonstrate non-unique contraint', function(done) {
-        
+
         it('should create two jobs when unique doesn\t match', function(done) {
           var time = new Date(Date.now() + 1000*60*3);
           var time2 = new Date(Date.now() + 1000*60*4);
-        
+
           jobs.create('unique job', {type: 'active', userId: '123', 'other': true}).unique({'data.type': 'active', 'data.userId': '123', nextRunAt: time}).schedule(time).save(function(err, job) {
            jobs.create('unique job', {type: 'active', userId: '123', 'other': false}).unique({'data.type': 'active', 'data.userId': '123', nextRunAt: time2}).schedule(time).save(function(err, job) {
               mongo.collection('agendaJobs').find({name: 'unique job'}).toArray(function(err, j) {
@@ -248,12 +249,12 @@ describe('Agenda', function() {
           });
 
         });
-        after(clearJobs);        
+        after(clearJobs);
 
-      });      
-      
+      });
+
     });
-    
+
     describe('now', function() {
       it('returns a job', function() {
         expect(jobs.now('send email')).to.be.a(Job);
@@ -459,7 +460,7 @@ describe('Job', function() {
       expect(job.repeatAt('3:30pm')).to.be(job);
     });
   });
-  
+
   describe('unique', function() {
     var job = new Job();
     it('sets the unique property', function() {
@@ -469,7 +470,7 @@ describe('Job', function() {
     it('returns the job', function() {
       expect(job.unique({'data.type': 'active', 'data.userId': '123'})).to.be(job);
     });
-  });  
+  });
 
   describe('repeatEvery', function() {
     var job = new Job();
@@ -573,13 +574,28 @@ describe('Job', function() {
       expect(job.attrs.nextRunAt.valueOf()).to.be(now.valueOf() + 60000);
     });
 
-    describe('when repeat at time is invalid', function () {
-      beforeEach(function () {
-        try {
-          job.attrs.repeatAt = 'foo';
-          job.computeNextRunAt();
-        } catch(e) {}
+      it('understands cron intervals with a timezone', function () {
+        var date = moment()
+          .tz('GMT')
+          .hours(6)
+          .minutes(1)
+          .toDate();
+        job.attrs.lastRunAt = date;
+        job.repeatEvery('0 6 * * *', {
+          timezone: 'GMT'
+        });
+        job.computeNextRunAt();
+        expect(moment(job.attrs.nextRunAt).tz('GMT').hour()).to.be(6);
+        expect(moment(job.attrs.nextRunAt).toDate().getDate()).to.be(moment(job.attrs.lastRunAt).add(1, 'days').toDate().getDate());
       });
+
+      describe('when repeat at time is invalid', function () {
+        beforeEach(function () {
+          try {
+            job.attrs.repeatAt = 'foo';
+            job.computeNextRunAt();
+          } catch(e) {}
+        });
 
       it('sets nextRunAt to undefined', function () {
         expect(job.attrs.nextRunAt).to.be(undefined);
